@@ -453,7 +453,7 @@ export function setupLoggers() {
       new winston.transports.Console({
         level: "debug",
         format: winston.format.printf((info) => {
-          const segments = [info.message, ...(info[SPLAT] || [])].map(tryStringify);
+          const segments = [info.message, ...(info[SPLAT as any] || [])].map(tryStringify);
           return `${ansiStrip(segments.join(" "))}`;
         }),
       })
@@ -463,7 +463,7 @@ export function setupLoggers() {
       new winston.transports.Console({
         level: "info",
         format: winston.format.printf((info) =>
-          [info.message, ...(info[SPLAT] || [])]
+          [info.message, ...(info[SPLAT as any] || [])]
             .filter((chunk) => typeof chunk == "string")
             .join(" ")
         ),

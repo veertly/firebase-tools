@@ -452,7 +452,7 @@ function populateResourceProperties(spec: ExtensionSpec): void {
     spec.resources.forEach((r) => {
       try {
         if (r.propertiesYaml) {
-          r.properties = yaml.safeLoad(r.propertiesYaml);
+          r.properties = yaml.safeLoad(r.propertiesYaml) as any;
         }
       } catch (err: any) {
         logger.debug(`[ext] failed to parse resource properties yaml: ${err}`);

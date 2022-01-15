@@ -440,7 +440,7 @@ export function createFirebaseEndpoints(emulator: StorageEmulator): Router {
           req.header("x-goog-upload-header-content-type") ||
           req.header("x-goog-upload-content-type");
         if (!objectContentType) {
-          const mimeTypeFromName = mime.getType(name);
+          const mimeTypeFromName = (mime as any).getType(name);
           if (!mimeTypeFromName) {
             objectContentType = "application/octet-stream";
           } else {
@@ -451,7 +451,7 @@ export function createFirebaseEndpoints(emulator: StorageEmulator): Router {
         const upload = storageLayer.startUpload(
           req.params.bucketId,
           name,
-          objectContentType,
+          objectContentType as string,
           req.body
         );
 

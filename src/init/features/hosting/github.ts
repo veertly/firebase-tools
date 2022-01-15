@@ -251,7 +251,7 @@ function defaultGithubRepo(): string | undefined {
 
 function loadYMLDeploy(): { exists: boolean; branch?: string } {
   if (fs.existsSync(YML_FULL_PATH_MERGE)) {
-    const { on } = loadYML(YML_FULL_PATH_MERGE);
+    const { on } = loadYML(YML_FULL_PATH_MERGE) as any;
     const branch = on.push.branches[0];
     return { exists: true, branch };
   } else {
