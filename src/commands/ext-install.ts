@@ -45,6 +45,7 @@ marked.setOptions({
 interface InstallExtensionOptions {
   paramsEnvPath?: string;
   projectId: string;
+  instanceId?: string;
   extensionName: string;
   source?: extensionsApi.ExtensionSource;
   extVersion?: extensionsApi.ExtensionVersion;
@@ -120,7 +121,7 @@ async function installExtension(options: InstallExtensionOptions): Promise<void>
       if (!nonInteractive) {
         choice = await promptForRepeatInstance(projectId, spec.name);
       } else if (nonInteractive && force) {
-        choice = "updateExisting";
+        choice = "installNew";
       } else {
         throw new FirebaseError(
           `An extension with the ID '${clc.bold(
@@ -135,7 +136,9 @@ async function installExtension(options: InstallExtensionOptions): Promise<void>
     let params: Record<string, string>;
     switch (choice) {
       case "installNew":
-        instanceId = await promptForValidInstanceId(`${instanceId}-${getRandomString(4)}`);
+        instanceId =
+          options.instanceId ||
+          (await promptForValidInstanceId(`${instanceId}-${getRandomString(4)}`));
         params = await paramHelper.getParams({
           projectId,
           paramSpecs: spec.params,
@@ -270,6 +273,7 @@ export default new Command("ext:install [extensionName]")
   )
   .withForce()
   .option("--params <paramsFile>", "name of params variables file with .env format.")
+  .option("--instanceId <instanceId>", "instance id prefix.")
   .before(requirePermissions, ["firebaseextensions.instances.create"])
   .before(ensureExtensionsApiEnabled)
   .before(checkMinRequiredVersion, "extMinVersion")
@@ -343,6 +347,7 @@ export default new Command("ext:install [extensionName]")
         extVersion,
         nonInteractive: options.nonInteractive,
         force: options.force,
+        instanceId: options.instanceId,
       });
     } catch (err: any) {
       if (!(err instanceof FirebaseError)) {
